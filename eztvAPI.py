@@ -119,11 +119,12 @@ class eztvAPI(object):
             if (num_episode not in self._season_and_episode[num_season]):
                 raise EpisodeNotFound('The episode ' + str(num_episode) + ' does not exist.', None)
             
-            print self._season_and_episode[num_season][num_episode]
-        return self._instance
+            return self._season_and_episode[num_season][num_episode]
+        return ""
 
     # specifc season
     def season(self, num_season=None):
+        res = ""
         # specific season, all episodes
         if (num_season is not None):
             # verifiyng the season exist            
@@ -131,18 +132,17 @@ class eztvAPI(object):
                 raise SeasonNotFound('The season ' + str(num_season) + ' does not exist.', None)
 
             for episode in self._season_and_episode[num_season]:
-                print str(episode) + ": " + self._season_and_episode[num_season][episode]
+                res = res + str(episode) + ": " + self._season_and_episode[num_season][episode] + "\n"
             pass
 
         # all seasons
         else:
             for season in self._season_and_episode:
                 for episode in self._season_and_episode[season]:
-                    print "S" + str(season) + "E" + str(episode) + ": " + self._season_and_episode[season][episode]
+                    res = res + "S" + str(season) + "E" + str(episode) + ": " + self._season_and_episode[season][episode] + "\n"
             pass
-        return self._instance
+        return res
 
     # all season
     def seasons(self):
-        self.season()
-        return self._instance
+        return self.season()

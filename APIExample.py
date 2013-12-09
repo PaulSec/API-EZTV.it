@@ -1,10 +1,12 @@
 from eztvAPI import *
 
+test_api = eztvAPI().TV_Show('Game Of Thrones')
+
 # get all the seasons from Game Of Thrones
-test_api = eztvAPI().TV_Show('Game Of Thrones').seasons()
+print test_api.seasons()
 
 # specific season
-test_api.season(3)
+print test_api.season(3)
 
 # specific episode
-test_api.episode(3, 10)
+print test_api.episode(3, 10)
