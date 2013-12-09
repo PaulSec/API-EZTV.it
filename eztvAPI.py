@@ -80,7 +80,7 @@ class eztvAPI(object):
                 regex = re.search(r"href=\"(.*)\" ", episode)
                 magnet_link = regex.group(1)
 
-                self.add_episode_and_season(season_tv_show, episode_tv_show, magnet_link)
+                self.add_season_and_episode(season_tv_show, episode_tv_show, magnet_link)
             except:
                 try:
                     regex = re.search(r"(\d+)x(\d+)", episode)
@@ -89,13 +89,13 @@ class eztvAPI(object):
                     regex = re.search(r"href=\"(.*)\" ", episode)
                     magnet_link = regex.group(1)
 
-                    self.add_episode_and_season(season_tv_show, episode_tv_show, magnet_link)
+                    self.add_season_and_episode(season_tv_show, episode_tv_show, magnet_link)
                 except:
                     pass
         return self._instance
 
     # insert into the dictionnary the season and the episode with the specific magnet link
-    def add_episode_and_season(self, num_season, num_episode, magnet_link):
+    def add_season_and_episode(self, num_season, num_episode, magnet_link):
         num_season = int(num_season)
         num_episode = int(num_episode)
 
