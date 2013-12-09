@@ -64,6 +64,7 @@ class eztvAPI(object):
         self.load_tv_show_data()
         return self._instance
 
+    # load the data, create a dictionnary structure with all seasons, episodes, magnet. 
     def load_tv_show_data(self):
         url = "http://eztv.it/search/"
         payload = {'SearchString' : self._id_tv_show, 'SearchString1': '', 'search': 'Search'}
@@ -73,8 +74,9 @@ class eztvAPI(object):
         
         episodes =  str(soup('a', {'class': 'magnet'})).split('</a>')
         for episode in episodes:
+            # Pattern : SXXEYY (eg. S01E10)
             regex = re.search(r"S(\d+)E(\d+)", episode)
-            try:
+            try:                
                 season_tv_show = regex.group(1)
                 episode_tv_show = regex.group(2)
                 regex = re.search(r"href=\"(.*)\" ", episode)
@@ -82,8 +84,9 @@ class eztvAPI(object):
 
                 self.add_season_and_episode(season_tv_show, episode_tv_show, magnet_link)
             except:
+                # Pattern : SSxYY (eg. 01x10)
+                regex = re.search(r"(\d+)x(\d+)", episode)
                 try:
-                    regex = re.search(r"(\d+)x(\d+)", episode)
                     season_tv_show = regex.group(1)
                     episode_tv_show = regex.group(2)
                     regex = re.search(r"href=\"(.*)\" ", episode)
@@ -119,7 +122,7 @@ class eztvAPI(object):
             if (num_episode not in self._season_and_episode[num_season]):
                 raise EpisodeNotFound('The episode ' + str(num_episode) + ' does not exist.', None)
             
-            return self._season_and_episode[num_season][num_episode]
+            return "S" + str(num_season) + "E" + str(num_episode) + ": " + self._season_and_episode[num_season][num_episode]
         return ""
 
     # specifc season
