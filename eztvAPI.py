@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
-URL = "http://eztv.it/"
+URL = "http://eztv.it"
 
 class TVShowNotFound(Exception):
     def __init__(self, message, Errors):
@@ -66,7 +66,9 @@ class eztvAPI(object):
 
     # load the data, create a dictionnary structure with all seasons, episodes, magnet. 
     def load_tv_show_data(self):
-        url = "http://eztv.it/search/"
+        global URL
+        
+        url = URL +  "/search/"
         payload = {'SearchString' : self._id_tv_show, 'SearchString1': '', 'search': 'Search'}
 
         req = requests.post(url, data=payload)
