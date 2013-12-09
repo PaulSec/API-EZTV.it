@@ -25,7 +25,6 @@ class EpisodeNotFound(Exception):
         Exception.__init__(self, message)
         self.Errors = Errors
 
-
 class eztvAPI(object):
     _instance = None
     _id_tv_show = None
@@ -67,7 +66,7 @@ class eztvAPI(object):
     # load the data, create a dictionnary structure with all seasons, episodes, magnet. 
     def load_tv_show_data(self):
         global URL
-        
+
         url = URL +  "/search/"
         payload = {'SearchString' : self._id_tv_show, 'SearchString1': '', 'search': 'Search'}
 
