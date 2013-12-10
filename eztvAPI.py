@@ -63,7 +63,7 @@ class eztvAPI(object):
         self.load_tv_show_data()
         return self._instance
 
-    # load the data, create a dictionnary structure with all seasons, episodes, magnet. 
+    # load the data, create a dictionary structure with all seasons, episodes, magnet. 
     def load_tv_show_data(self):
         global URL
 
@@ -98,7 +98,7 @@ class eztvAPI(object):
                     pass
         return self._instance
 
-    # insert into the dictionnary the season and the episode with the specific magnet link
+    # insert into the dictionary the season and the episode with the specific magnet link
     def add_season_and_episode(self, num_season, num_episode, magnet_link):
         num_season = int(num_season)
         num_episode = int(num_episode)
@@ -112,6 +112,7 @@ class eztvAPI(object):
         return self._instance
 
     # specific episode
+    # return magnet link string
     def episode(self, num_season=None, num_episode=None):
         # specific episode
         if (num_season is not None and num_episode is not None):
@@ -123,30 +124,23 @@ class eztvAPI(object):
             if (num_episode not in self._season_and_episode[num_season]):
                 raise EpisodeNotFound('The episode ' + str(num_episode) + ' does not exist.', None)
             
-            return "S" + str(num_season) + "E" + str(num_episode) + ": " + self._season_and_episode[num_season][num_episode]
-        return ""
+            return self._season_and_episode[num_season][num_episode]
 
     # specifc season
+    # return data structure (dictionary)
     def season(self, num_season=None):
-        res = ""
         # specific season, all episodes
         if (num_season is not None):
             # verifiyng the season exist            
             if (num_season not in self._season_and_episode):
                 raise SeasonNotFound('The season ' + str(num_season) + ' does not exist.', None)
 
-            for episode in self._season_and_episode[num_season]:
-                res = res + str(episode) + ": " + self._season_and_episode[num_season][episode] + "\n"
-            pass
+            return self._season_and_episode[num_season]
 
         # all seasons
         else:
-            for season in self._season_and_episode:
-                for episode in self._season_and_episode[season]:
-                    res = res + "S" + str(season) + "E" + str(episode) + ": " + self._season_and_episode[season][episode] + "\n"
-            pass
-        return res
+            return self._season_and_episode
 
     # all season
     def seasons(self):
-        return self.season()
+        return self._season_and_episode
