@@ -112,7 +112,7 @@ class eztvAPI(object):
         return self._instance
 
     # specific episode
-    # return magnet link string
+    # return dictionary structure
     def episode(self, num_season=None, num_episode=None):
         # specific episode
         if (num_season is not None and num_episode is not None):
@@ -124,7 +124,9 @@ class eztvAPI(object):
             if (num_episode not in self._season_and_episode[num_season]):
                 raise EpisodeNotFound('The episode ' + str(num_episode) + ' does not exist.', None)
             
-            return self._season_and_episode[num_season][num_episode]
+            episode_dico = {}
+            episode_dico[num_episode] = self._season_and_episode[num_season][num_episode]
+            return episode_dico
 
     # specifc season
     # return data structure (dictionary)
