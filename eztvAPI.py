@@ -133,12 +133,12 @@ class eztvAPI(object):
             # verifiyng the season exist
             if (num_season not in self._season_and_episode):
                 raise SeasonNotFound(
-                    'The season ' + str(num_season) + ' does not exist.', None)
+                    'The season %s does not exist.' % num_season, None)
 
             # verifying the episode exists
             if (num_episode not in self._season_and_episode[num_season]):
                 raise EpisodeNotFound(
-                    'The episode ' + str(num_episode) + ' does not exist.', None)
+                    'The episode %s does not exist.' % num_episode, None)
 
             episode_dico = {}
             episode_dico[num_episode] = self._season_and_episode[
@@ -153,11 +153,11 @@ class eztvAPI(object):
             # verifiyng the season exist
             if (num_season not in self._season_and_episode):
                 raise SeasonNotFound(
-                    'The season ' + str(num_season) + ' does not exist.', None)
+                    'The season %s does not exist.' % num_season, None)
 
             return self._season_and_episode[num_season]
 
-        # all seasons
+        # all seasons 
         else:
             return self._season_and_episode
 
@@ -166,5 +166,5 @@ class eztvAPI(object):
         return self._season_and_episode
 
     def update(self):
-        self.load_tv_show_data
+        return self.load_tv_show_data()
 
