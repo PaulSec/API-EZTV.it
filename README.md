@@ -15,13 +15,13 @@ Then, you can start using the EZTV API.
 
 Start by importing the API file 
 ```
-from eztvAPI import *
+from eztv_api import EztvAPI
 ```
 
 Then, you can search for a specific TV Show
 
 ```
-test_api = eztvAPI().TV_Show('Game Of Thrones')
+test_api = EztvAPI().tv_show('Game Of Thrones')
 ```
 
 The search is not case sensitive so : 
