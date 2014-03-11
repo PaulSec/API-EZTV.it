@@ -25,7 +25,7 @@ test_api = eztvAPI().TV_Show('Game Of Thrones')
 ```
 
 The search is not case sensitive so : 
-"_Game Of Thrones_" equals "_GaMe oF ThRoNeS_" equals "_games of thrones_" ...
+"_Game Of Thrones_" equals "_GaMe oF ThRoNeS_" equals "_game of thrones_" ...
 
 ## Iterate on all the seasons : 
 
