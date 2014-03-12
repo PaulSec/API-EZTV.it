@@ -82,7 +82,6 @@ class EztvAPI(object):
         terms = name.split(' ')
 
         req = requests.get(URL, timeout=5)
-        found = False
 
         soup = BeautifulSoup(req.content)
         tv_shows = str(
@@ -93,10 +92,9 @@ class EztvAPI(object):
                 # get the id of the show
                 id_tv_show = re.search(r"\d+", tv_show)
                 self._id_tv_show = id_tv_show.group(0)
-                found = True
                 break
 
-        if not found:
+        else:
             raise TVShowNotFound('The TV Show "%s" has not been found.'
                                  % ' '.join(terms), None)
 
@@ -110,7 +108,7 @@ class EztvAPI(object):
             episodes, magnet.
         """
 
-        url = URL + "/search/"
+        url = "{}/search/".format(URL)
         payload = {'SearchString': self._id_tv_show,
                    'SearchString1': '', 'search': 'Search'}
 
