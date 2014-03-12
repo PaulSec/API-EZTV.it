@@ -49,6 +49,10 @@ class EztvAPI(object):
     _instance = None
     _id_tv_show = None
     _season_and_episode = {}
+    _patterns = [
+        r"S(\d+)E(\d+)", # Matches SXXEYY (eg. S01E10)
+        r"(\d+)x(\d+)", # Matches SSxYY (eg. 01x10)
+    ]
 
     def __new__(cls, *args, **kwargs):
         """
@@ -58,6 +62,18 @@ class EztvAPI(object):
             cls._instance = super(EztvAPI, cls).__new__(
                 cls, *args, **kwargs)
         return cls._instance
+
+    def _match_pattern(self, pattern, episode):
+        regex = re.search(pattern, episode)
+        if regex is None: # Yeah, I try to be a positive person.
+            return
+
+        season_tv_show = regex.group(1)
+        episode_tv_show = regex.group(2)
+        regex = re.search(r"href=\"(.*)\" ", episode)
+        magnet_link = regex.group(1)
+
+        return (season_tv_show, episode_tv_show, magnet_link)
 
     def tv_show(self, name):
         """
@@ -103,30 +119,12 @@ class EztvAPI(object):
         soup = BeautifulSoup(req.content)
 
         episodes = str(soup('a', {'class': 'magnet'})).split('</a>')
-        for episode in episodes:
-            # Pattern : SXXEYY (eg. S01E10)
-            regex = re.search(r"S(\d+)E(\d+)", episode)
-            try:
-                season_tv_show = regex.group(1)
-                episode_tv_show = regex.group(2)
-                regex = re.search(r"href=\"(.*)\" ", episode)
-                magnet_link = regex.group(1)
-
-                self.add_season_and_episode(
-                    season_tv_show, episode_tv_show, magnet_link)
-            except AttributeError:
-                # Pattern : SSxYY (eg. 01x10)
-                regex = re.search(r"(\d+)x(\d+)", episode)
-                try:
-                    season_tv_show = regex.group(1)
-                    episode_tv_show = regex.group(2)
-                    regex = re.search(r"href=\"(.*)\" ", episode)
-                    magnet_link = regex.group(1)
-
-                    self.add_season_and_episode(
-                        season_tv_show, episode_tv_show, magnet_link)
-                except AttributeError:
-                    pass
+        for epi in episodes:
+            for pat in self._patterns:
+                data = self._match_pattern(pat, epi)
+                if data is None:
+                    continue
+                self.add_season_and_episode(data[0], data[1], data[2])
         return self._instance
 
     def add_season_and_episode(self, num_season, num_episode, magnet_link):
