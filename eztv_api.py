@@ -1,3 +1,10 @@
+"""
+This is the (unofficial) Python API for EZTV.it
+
+Using this code, you can manage to get the information regarding any TV Show
+which is listed on EZTV.it See how to use it thanks to the file "APIExample.py"
+
+"""
 from bs4 import BeautifulSoup
 import requests
 import re
@@ -6,45 +13,70 @@ URL = "http://eztv.it"
 
 
 class TVShowNotFound(Exception):
+    """
+        TV Show Not Found Exception
+    """
 
-    def __init__(self, message, Errors):
+    def __init__(self, message, errors):
+        """
+            Class constructor
+        """
 
         # Call the base class constructor with the parameters it needs
         Exception.__init__(self, message)
-        self.Errors = Errors
+        self.errors = errors
 
 
 class SeasonNotFound(Exception):
+    """
+        Season Not Found Exception
+    """
 
-    def __init__(self, message, Errors):
+    def __init__(self, message, errors):
+        """
+            Class constructor
+        """
 
         # Call the base class constructor with the parameters it needs
         Exception.__init__(self, message)
-        self.Errors = Errors
+        self.errors = errors
 
 
 class EpisodeNotFound(Exception):
+    """
+        Episode Not Found Exception
+    """
 
-    def __init__(self, message, Errors):
+    def __init__(self, message, errors):
 
         # Call the base class constructor with the parameters it needs
         Exception.__init__(self, message)
-        self.Errors = Errors
+        self.errors = errors
 
 
-class eztvAPI(object):
+class EztvAPI(object):
+    """
+        EztvAPI Main Handler
+    """
+
     _instance = None
     _id_tv_show = None
     _season_and_episode = {}
 
     def __new__(cls, *args, **kwargs):
+        """
+            __new__ builtin
+        """
         if not cls._instance:
-            cls._instance = super(eztvAPI, cls).__new__(
+            cls._instance = super(EztvAPI, cls).__new__(
                 cls, *args, **kwargs)
         return cls._instance
 
-    def TV_Show(self, name):
-        global URL
+    def tv_show(self, name):
+        """
+            Fetches a show mapping $name returns a $self instance.
+            Might raise a TVShowNotFound exception
+        """
         # all strings are in lowercase
         name = name.lower()
         terms = name.split(' ')
@@ -65,17 +97,18 @@ class eztvAPI(object):
                 break
 
         if not found:
-            raise TVShowNotFound(
-                'The TV Show "' + ' '.join(terms) + '" has not been found.', None)
+            raise TVShowNotFound('The TV Show "%s" has not been found.'
+                                 % ' '.join(terms), None)
 
         # load the tv show data
         self.load_tv_show_data()
         return self._instance
 
-    # load the data, create a dictionary structure with all seasons, episodes,
-    # magnet.
     def load_tv_show_data(self):
-        global URL
+        """
+            load the data, create a dictionary structure with all seasons,
+            episodes, magnet.
+        """
 
         url = URL + "/search/"
         payload = {'SearchString': self._id_tv_show,
@@ -96,7 +129,7 @@ class eztvAPI(object):
 
                 self.add_season_and_episode(
                     season_tv_show, episode_tv_show, magnet_link)
-            except:
+            except AttributeError:
                 # Pattern : SSxYY (eg. 01x10)
                 regex = re.search(r"(\d+)x(\d+)", episode)
                 try:
@@ -107,13 +140,15 @@ class eztvAPI(object):
 
                     self.add_season_and_episode(
                         season_tv_show, episode_tv_show, magnet_link)
-                except:
+                except AttributeError:
                     pass
         return self._instance
 
-    # insert into the dictionary the season and the episode with the specific
-    # magnet link
     def add_season_and_episode(self, num_season, num_episode, magnet_link):
+        """
+             insert into the dictionary the season and the episode with the
+             specific magnet link
+        """
         num_season = int(num_season)
         num_episode = int(num_episode)
 
@@ -125,9 +160,12 @@ class eztvAPI(object):
 
         return self._instance
 
-    # specific episode
-    # return dictionary structure
     def episode(self, num_season=None, num_episode=None):
+        """
+             specific episode
+             return dictionary structure
+             might raise SeasonNotFound or EpisodeNotFound exceptions
+        """
         # specific episode
         if (num_season is not None and num_episode is not None):
             # verifiyng the season exist
@@ -145,9 +183,12 @@ class eztvAPI(object):
                 num_season][num_episode]
             return episode_dico
 
-    # specifc season
-    # return data structure (dictionary)
     def season(self, num_season=None):
+        """
+             specifc season
+             return data structure (dictionary)
+             might raise SeasonNotFound exceptions
+        """
         # specific season, all episodes
         if (num_season is not None):
             # verifiyng the season exist
@@ -157,14 +198,19 @@ class eztvAPI(object):
 
             return self._season_and_episode[num_season]
 
-        # all seasons 
+        # all seasons
         else:
             return self._season_and_episode
 
-    # all season
     def seasons(self):
+        """
+            all seasons
+        """
         return self._season_and_episode
 
     def update(self):
+        """
+            load the data, create a dictionary structure with all seasons,
+            episodes, magnet.
+        """
         return self.load_tv_show_data()
-
