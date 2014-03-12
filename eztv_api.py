@@ -12,47 +12,34 @@ import re
 URL = "http://eztv.it"
 
 
-class TVShowNotFound(Exception):
+class EztvException(Exception):
+    """
+        Base exception for this API
+    """
+
+    def __init__(self, message, errors):
+        """
+            Class constructor
+        """
+
+        # Call the base class constructor with the parameters it needs
+        Exception.__init__(self, message)
+        self.errors = errors
+
+class TVShowNotFound(EztvException):
     """
         TV Show Not Found Exception
     """
 
-    def __init__(self, message, errors):
-        """
-            Class constructor
-        """
-
-        # Call the base class constructor with the parameters it needs
-        Exception.__init__(self, message)
-        self.errors = errors
-
-
-class SeasonNotFound(Exception):
+class SeasonNotFound(EztvException):
     """
         Season Not Found Exception
     """
 
-    def __init__(self, message, errors):
-        """
-            Class constructor
-        """
-
-        # Call the base class constructor with the parameters it needs
-        Exception.__init__(self, message)
-        self.errors = errors
-
-
-class EpisodeNotFound(Exception):
+class EpisodeNotFound(EztvException):
     """
         Episode Not Found Exception
     """
-
-    def __init__(self, message, errors):
-
-        # Call the base class constructor with the parameters it needs
-        Exception.__init__(self, message)
-        self.errors = errors
-
 
 class EztvAPI(object):
     """
