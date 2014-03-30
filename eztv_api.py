@@ -26,20 +26,24 @@ class EztvException(Exception):
         Exception.__init__(self, message)
         self.errors = errors
 
+
 class TVShowNotFound(EztvException):
     """
         TV Show Not Found Exception
     """
+
 
 class SeasonNotFound(EztvException):
     """
         Season Not Found Exception
     """
 
+
 class EpisodeNotFound(EztvException):
     """
         Episode Not Found Exception
     """
+
 
 class EztvAPI(object):
     """
@@ -50,8 +54,8 @@ class EztvAPI(object):
     _id_tv_show = None
     _season_and_episode = {}
     _patterns = [
-        r"S(\d+)E(\d+)", # Matches SXXEYY (eg. S01E10)
-        r"(\d+)x(\d+)", # Matches SSxYY (eg. 01x10)
+        r"S(\d+)E(\d+)",  # Matches SXXEYY (eg. S01E10)
+        r"(\d+)x(\d+)",  # Matches SSxYY (eg. 01x10)
     ]
 
     def __new__(cls, *args, **kwargs):
@@ -65,7 +69,7 @@ class EztvAPI(object):
 
     def _match_pattern(self, pattern, episode):
         regex = re.search(pattern, episode)
-        if regex is None: # Yeah, I try to be a positive person.
+        if regex is None:  # Yeah, I try to be a positive person.
             return
 
         season_tv_show = regex.group(1)
@@ -118,6 +122,7 @@ class EztvAPI(object):
         req = requests.post(url, data=payload, timeout=5)
         soup = BeautifulSoup(req.content)
 
+        self._season_and_episode = {}
         episodes = str(soup('a', {'class': 'magnet'})).split('</a>')
         for epi in episodes:
             for pat in self._patterns:
