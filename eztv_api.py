@@ -97,8 +97,8 @@ class EztvAPI(object):
             tv_show = tv_show.lower()
             if all(x in tv_show for x in terms):
                 # get the id of the show
-                id_tv_show = re.search(r"\d+", tv_show)
-                self._id_tv_show = id_tv_show.group(0)
+                id_tv_show = re.search(r"value=\"(\d+)\"", tv_show)
+                self._id_tv_show = id_tv_show.group(1)
                 break
 
         else:
