@@ -10,6 +10,7 @@ import requests
 import re
 
 URL = "https://eztv.ch"
+QUALITY_PREF = "720p"
 
 
 class EztvException(Exception):
@@ -135,7 +136,8 @@ class EztvAPI(object):
     def add_season_and_episode(self, num_season, num_episode, magnet_link):
         """
              insert into the dictionary the season and the episode with the
-             specific magnet link
+             specific magnet link 
+             but also consider quality preference (QUALITY_PREF)
         """
         num_season = int(num_season)
         num_episode = int(num_episode)
@@ -144,6 +146,8 @@ class EztvAPI(object):
             self._season_and_episode[num_season] = {}
 
         if (num_episode not in self._season_and_episode[num_season]):
+            self._season_and_episode[num_season][num_episode] = magnet_link
+        elif (QUALITY_PREF in magnet_link):
             self._season_and_episode[num_season][num_episode] = magnet_link
 
         return self._instance
