@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
-URL = "http://eztv.it"
+URL = "https://eztv.ch"
 
 
 class EztvException(Exception):
