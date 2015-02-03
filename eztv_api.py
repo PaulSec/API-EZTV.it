@@ -155,7 +155,7 @@ class EztvAPI(object):
     def episode(self, num_season=None, num_episode=None):
         """
              specific episode
-             return dictionary structure
+             return magnet link of episode
              might raise SeasonNotFound or EpisodeNotFound exceptions
         """
         # specific episode
@@ -170,10 +170,7 @@ class EztvAPI(object):
                 raise EpisodeNotFound(
                     'The episode %s does not exist.' % num_episode, None)
 
-            episode_dico = {}
-            episode_dico[num_episode] = self._season_and_episode[
-                num_season][num_episode]
-            return episode_dico
+            return self._season_and_episode[num_season][num_episode]
 
     def season(self, num_season=None):
         """
