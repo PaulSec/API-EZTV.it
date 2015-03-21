@@ -141,6 +141,7 @@ class EztvAPI(object):
         """
         num_season = int(num_season)
         num_episode = int(num_episode)
+        magnet_link = magnet_link.replace('&amp;', '&')
 
         if (num_season not in self._season_and_episode):
             self._season_and_episode[num_season] = {}
