@@ -89,7 +89,7 @@ class EztvAPI(object):
         name = name.lower()
         terms = name.split(' ')
 
-        req = requests.get(URL, timeout=5)
+        req = requests.get(URL, timeout=5, verify=False)
 
         soup = BeautifulSoup(req.content, 'html.parser')
         tv_shows = str(
@@ -120,7 +120,7 @@ class EztvAPI(object):
         payload = {'SearchString': self._id_tv_show,
                    'SearchString1': '', 'search': 'Search'}
 
-        req = requests.post(url, data=payload, timeout=5)
+        req = requests.post(url, data=payload, timeout=5, verify=False)
         soup = BeautifulSoup(req.content, 'html.parser')
 
         self._season_and_episode = {}
