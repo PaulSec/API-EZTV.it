@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
-URL = "https://eztv.ch"
+URL = "https://eztv.ag"
 QUALITY_PREF = "720p"
 
 
@@ -78,7 +78,7 @@ class EztvAPI(object):
         regex = re.search(r"href=\"(.*)\" ", episode)
         magnet_link = regex.group(1)
 
-        return (season_tv_show, episode_tv_show, magnet_link)
+        return (season_tv_show, episode_tv_show, magnet_link.split('"')[0])
 
     def tv_show(self, name):
         """
@@ -87,24 +87,14 @@ class EztvAPI(object):
         """
         # all strings are in lowercase
         name = name.lower()
-        terms = name.split(' ')
+        data = {
+            'SearchString': '',
+            'SearchString1': name,
+            'search': 'search'
+        }
 
-        req = requests.get(URL, timeout=5, verify=False)
-
-        soup = BeautifulSoup(req.content, 'html.parser')
-        tv_shows = str(
-            soup('select', {'name': 'SearchString'})).split('</option>')
-        for tv_show in tv_shows:
-            tv_show = tv_show.lower()
-            if all(x in tv_show for x in terms):
-                # get the id of the show
-                id_tv_show = re.search(r"value=\"(\d+)\"", tv_show)
-                self._id_tv_show = id_tv_show.group(1)
-                break
-
-        else:
-            raise TVShowNotFound('The TV Show "%s" has not been found.'
-                                 % ' '.join(terms), None)
+        req = requests.post(URL + "/search/", data=data, timeout=5)
+        self.content = requests.get(req.url, timeout=5).content
 
         # load the tv show data
         self.load_tv_show_data()
@@ -115,13 +105,7 @@ class EztvAPI(object):
             load the data, create a dictionary structure with all seasons,
             episodes, magnet.
         """
-
-        url = "{}/search/".format(URL)
-        payload = {'SearchString': self._id_tv_show,
-                   'SearchString1': '', 'search': 'Search'}
-
-        req = requests.post(url, data=payload, timeout=5, verify=False)
-        soup = BeautifulSoup(req.content, 'html.parser')
+        soup = BeautifulSoup(self.content, 'html.parser')
 
         self._season_and_episode = {}
         episodes = str(soup('a', {'class': 'magnet'})).split('</a>')
