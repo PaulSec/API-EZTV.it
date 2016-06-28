@@ -2,7 +2,7 @@ from eztv_api import EztvAPI
 
 test_api = EztvAPI().tv_show('New girl')
 
-# get all the seasons from Game Of Thrones
+# get all the seasons from New girl
 seasons = test_api.seasons()
 for season in seasons:
     for episode in seasons[season]:
